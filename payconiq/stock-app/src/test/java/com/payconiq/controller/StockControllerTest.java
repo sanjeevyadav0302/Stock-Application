@@ -39,14 +39,6 @@ public class StockControllerTest {
     @MockBean
     private StockStubService stockStubService;
 
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -54,10 +46,7 @@ public class StockControllerTest {
 
     @Test
     public void getStocks_Success_ShouldReturnOkResponse() throws Exception {
-        Stock stock = new Stock();
-        stock.setName("SAN");
-        stock.setId(22);
-        stock.setCurrentPrice(500.01);
+        Stock stock = getStock(22, 500.01);
         when(stockStubService.getStocks())
                 .thenReturn(Arrays.asList(stock));
         mockMvc.perform(get("/api/stocks").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
@@ -67,10 +56,7 @@ public class StockControllerTest {
 
     @Test
     public void getStock_Success_ShouldReturnOkResponse() throws Exception {
-        Stock stock = new Stock();
-        stock.setName("SAN");
-        stock.setId(22);
-        stock.setCurrentPrice(500.01);
+        Stock stock = getStock(22, 500.01);
         when(stockStubService.getStock(1))
                 .thenReturn(stock);
         mockMvc.perform(get("/api/stocks/{stockId}", 1).accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
@@ -79,10 +65,7 @@ public class StockControllerTest {
 
     @Test
     public void getStock_ThrowException_ForNonExistingStockId() throws Exception {
-        Stock stock = new Stock();
-        stock.setName("SAN");
-        stock.setId(22);
-        stock.setCurrentPrice(500.01);
+        Stock stock = getStock(22, 500.01);
         when(stockStubService.getStock(1))
                 .thenThrow(new StockIdNotFoundException("Stock id not found"));
         mockMvc.perform(get("/api/stocks/{stockId}", 1).accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
@@ -91,10 +74,7 @@ public class StockControllerTest {
 
     @Test
     public void updateStock_Success_ShouldReturnOkResponse() throws Exception {
-        Stock stock = new Stock();
-        stock.setName("SAN");
-        stock.setId(1);
-        stock.setCurrentPrice(100.02);
+        Stock stock = getStock(1, 100.02);
         when(stockStubService.updateStocksPrice(1, 100.02))
                 .thenReturn(stock);
         mockMvc.perform(put("/api/stocks/{stockId}", 1)
@@ -105,10 +85,7 @@ public class StockControllerTest {
 
     @Test
     public void updateStock_ThrowException_ForNoNExistingStockId() throws Exception {
-        Stock stock = new Stock();
-        stock.setName("SAN");
-        stock.setId(11);
-        stock.setCurrentPrice(100.02);
+        Stock stock = getStock(11, 100.02);
         when(stockStubService.updateStocksPrice(11, 100.02))
                 .thenThrow(new StockIdNotFoundException("Stock id not found"));
         mockMvc.perform(put("/api/stocks/{stockId}", 11)
@@ -119,15 +96,28 @@ public class StockControllerTest {
 
     @Test
     public void createStock_Success_ShouldReturnOkResponse() throws Exception {
-        Stock stock = new Stock();
-        stock.setName("SAN");
-        stock.setId(1);
-        stock.setCurrentPrice(100.02);
+        Stock stock = getStock(1, 100.02);
         when(stockStubService.updateStocksPrice(1, 100.02))
                 .thenReturn(stock);
         mockMvc.perform(post("/api/stocks", 1)
                 .contentType("application/json")
                 .content(asJsonString(stock)))
                 .andExpect(status().isOk());
+    }
+
+    private Stock getStock(int id, double currentPrice) {
+        Stock stock = new Stock();
+        stock.setName("SAN");
+        stock.setId(id);
+        stock.setCurrentPrice(currentPrice);
+        return stock;
+    }
+
+    private static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
