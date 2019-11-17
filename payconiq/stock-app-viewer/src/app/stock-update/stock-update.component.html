@@ -1,0 +1,28 @@
+<div class="container custom-container">
+  <div class="col-md-12">
+
+    <h3 class="mb-3 text-center">Update Stock</h3>
+
+    <div class="form-group">
+      <input type="text" [(ngModel)]="stockData.id" class="form-control" placeholder="Id">
+    </div>
+
+    <div class="form-group">
+      <input type="text" [(ngModel)]="stockData.name" class="form-control" placeholder="Nmae">
+    </div>
+
+    <div class="form-group">
+      <input type="text" [(ngModel)]="stockData.currentPrice" class="form-control" placeholder="CurrentPrice">
+    </div>
+
+    <!--<div class="form-group">
+      <input type="text" [(ngModel)]="stockData.lastUpdate" class="form-control" placeholder="LastUpdate">
+    </div>-->
+
+    <!--btn-block-->
+    <div class="form-group">
+      <button class="btn btn-success btn-lg btn-outline-primary" (click)="updateStocks()">Update Stock</button>
+    </div>
+
+  </div>
+</div>
